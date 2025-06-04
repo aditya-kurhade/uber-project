@@ -1,4 +1,3 @@
-//route logic are writen in controllers
 const userModel = require("../models/user.model")
 const userServices = require("../services/user.service")
 const { validationResult } = require("express-validator")
@@ -11,6 +10,12 @@ module.exports.registerUser = async(req,res,next) => {
     }
 
     const {fullname, email, password} = req.body;
+
+    const isUserAlreadyExist = await userModel.findOne({email});
+
+    if(isUserAlreadyExist){
+        return res.status(400).json({message: "user already exist"});
+    }
 
     const hashedpassword = await userModel.hashpassword(password);
 
